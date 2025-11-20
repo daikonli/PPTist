@@ -48,10 +48,7 @@
           <PopoverMenuItem class="popover-menu-item" @click="resetSlides(); mainMenuVisible = false"><IconRefresh class="icon" /> 重置幻灯片</PopoverMenuItem>
           <PopoverMenuItem class="popover-menu-item" @click="openMarkupPanel(); mainMenuVisible = false"><IconMark class="icon" /> 幻灯片类型标注</PopoverMenuItem>
           <PopoverMenuItem class="popover-menu-item" @click="mainMenuVisible = false; hotkeyDrawerVisible = true"><IconCommand class="icon" /> 快捷操作</PopoverMenuItem>
-          <PopoverMenuItem class="popover-menu-item" @click="goLink('https://github.com/pipipi-pikachu/PPTist/issues')"><IconComment class="icon" /> 意见反馈</PopoverMenuItem>
-          <PopoverMenuItem class="popover-menu-item" @click="goLink('https://github.com/pipipi-pikachu/PPTist/blob/master/doc/Q&A.md')"><IconHelpcenter class="icon" /> 常见问题</PopoverMenuItem>
           <Divider :margin="10" />
-          <div class="statement">注：本站仅作测试/演示，不提供任何形式的服务</div>
         </template>
         <div class="menu-item"><IconHamburgerButton class="icon" /></div>
       </Popover>
@@ -92,9 +89,6 @@
       <div class="menu-item" v-tooltip="'导出'" @click="setDialogForExport('pptx')">
         <IconDownload class="icon" />
       </div>
-      <a class="github-link" v-tooltip="'Copyright © 2020-PRESENT pipipi-pikachu'" href="https://github.com/pipipi-pikachu/PPTist" target="_blank">
-        <div class="menu-item"><IconGithub class="icon" /></div>
-      </a>
     </div>
 
     <Drawer
@@ -150,11 +144,6 @@ const startEditTitle = () => {
 const handleUpdateTitle = () => {
   slidesStore.setTitle(titleValue.value)
   editingTitle.value = false
-}
-
-const goLink = (url: string) => {
-  window.open(url)
-  mainMenuVisible.value = false
 }
 
 const setDialogForExport = (type: DialogForExportTypes) => {
@@ -361,9 +350,5 @@ const openAIPPTDialog = () => {
       background-color: #f1f1f1;
     }
   }
-}
-.github-link {
-  display: inline-block;
-  height: 30px;
 }
 </style>

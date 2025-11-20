@@ -16,6 +16,9 @@
         </template>
         <div class="select-btn"><IconDown /></div>
       </Popover>
+      <div class="collapse-btn" @click="mainStore.setThumbnailsVisibility(false)" title="收起缩略图">
+        <IconLeft />
+      </div>
     </div>
 
     <Draggable 
@@ -60,7 +63,7 @@
             @dblclick="enterScreening()"
             v-contextmenu="contextmenusThumbnailItem"
           >
-            <div class="label" :class="{ 'offset-left': index >= 99 }">{{ fillDigit(index + 1, 2) }}</div>
+            <div class="label" :class="{ 'offset-left': index >= 99 }">{{index + 1 }}</div>
             <ThumbnailSlide class="thumbnail" :slide="element" :size="120" :visible="index < slidesLoadLimit" />
   
             <div class="note-flag" v-if="element.notes && element.notes.length" @click="openNotesPanel()">{{ element.notes.length }}</div>
@@ -77,7 +80,6 @@
 import { computed, nextTick, ref, watch, useTemplateRef } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore, useKeyboardStore } from '@/store'
-import { fillDigit } from '@/utils/common'
 import { isElementInViewport } from '@/utils/element'
 import type { ContextmenuItem } from '@/components/Contextmenu/types'
 import useSlideHandler from '@/hooks/useSlideHandler'
@@ -372,7 +374,7 @@ const contextmenusThumbnailItem = (): ContextmenuItem[] => {
   user-select: none;
 }
 .add-slide {
-  height: 40px;
+  height: 50px;
   font-size: 12px;
   display: flex;
   flex-shrink: 0;
@@ -389,7 +391,7 @@ const contextmenusThumbnailItem = (): ContextmenuItem[] => {
       background-color: $lightGray;
     }
   }
-  .select-btn {
+  .select-btn, .collapse-btn {
     width: 30px;
     height: 100%;
     display: flex;

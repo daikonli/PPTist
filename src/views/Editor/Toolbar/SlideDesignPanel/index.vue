@@ -260,33 +260,6 @@
     <div class="row">
       <Button style="flex: 1;" @click="themeStylesExtractVisible = true"><IconPlatte /> 从幻灯片提取主题</Button>
     </div>
-
-    <Divider />
-
-    <div class="title">预置主题</div>
-    <div class="theme-list">
-      <div 
-        class="theme-item" 
-        v-for="(item, index) in PRESET_THEMES" 
-        :key="index"
-        :style="{
-          backgroundColor: item.background,
-          fontFamily: item.fontname,
-        }"
-      >
-        <div class="theme-item-content">
-          <div class="text" :style="{ color: item.fontColor }">文字 Aa</div>
-          <div class="colors">
-            <div class="color-block" v-for="(color, index) in item.colors" :key="index" :style="{ backgroundColor: color}"></div>
-          </div>
-
-          <div class="btns">
-            <Button type="primary" size="small" @click="applyPresetTheme(item)">设置</Button>
-            <Button type="primary" size="small" style="margin-top: 3px;" @click="applyPresetTheme(item, true)">设置并应用</Button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <Modal
@@ -320,7 +293,6 @@ import type {
   SlideBackgroundImageSize,
   LineStyleType,
 } from '@/types/slides'
-import { PRESET_THEMES } from '@/configs/theme'
 import { FONTS } from '@/configs/font'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
 import useSlideTheme from '@/hooks/useSlideTheme'

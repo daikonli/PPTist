@@ -107,6 +107,12 @@
       <div class="insert-handler-item" :class="{ 'active': showSymbolPanel }" v-tooltip="'插入符号'" @click="toggleSymbolPanel()">
         <IconSymbol class="icon" /> <span class="text">符号</span>
       </div>
+      <div class="insert-handler-item" :class="{ 'active': showToolbar && toolbarState === ToolbarStates.SLIDE_DESIGN }" v-tooltip="'格式'" @click="openDesignPanel()">
+        <IconTheme class="icon" /> <span class="text">格式</span>
+      </div>
+      <div class="insert-handler-item" :class="{ 'active': showToolbar && toolbarState === ToolbarStates.EL_ANIMATION }" v-tooltip="'动画'" @click="openAnimationPanel()">
+        <IconEffects class="icon" /> <span class="text">动画</span>
+      </div>
     </div>
 
     <div class="right-handler">
@@ -146,6 +152,7 @@ import { useMainStore, useSnapshotStore } from '@/store'
 import { getImageDataURL } from '@/utils/image'
 import type { ShapePoolItem } from '@/configs/shapes'
 import type { LinePoolItem } from '@/configs/lines'
+import { ToolbarStates } from '@/types/toolbar'
 import useScaleCanvas from '@/hooks/useScaleCanvas'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
 import useCreateElement from '@/hooks/useCreateElement'
@@ -163,7 +170,7 @@ import Popover from '@/components/Popover.vue'
 import PopoverMenuItem from '@/components/PopoverMenuItem.vue'
 
 const mainStore = useMainStore()
-const { creatingElement, creatingCustomShape, showSelectPanel, showSearchPanel, showNotesPanel, showSymbolPanel } = storeToRefs(mainStore)
+const { creatingElement, creatingCustomShape, showSelectPanel, showSearchPanel, showNotesPanel, showSymbolPanel, toolbarState, showToolbar } = storeToRefs(mainStore)
 const { canUndo, canRedo } = storeToRefs(useSnapshotStore())
 
 const { redo, undo } = useHistorySnapshot()
@@ -258,6 +265,18 @@ const toggleNotesPanel = () => {
 // 打开符号面板
 const toggleSymbolPanel = () => {
   mainStore.setSymbolPanelState(!showSymbolPanel.value)
+}
+
+// 打开设计面板
+const openDesignPanel = () => {
+  mainStore.setToolbarState(ToolbarStates.SLIDE_DESIGN)
+  mainStore.setToolbarVisibility(true)
+}
+
+// 打开动画面板
+const openAnimationPanel = () => {
+  mainStore.setToolbarState(ToolbarStates.EL_ANIMATION)
+  mainStore.setToolbarVisibility(true)
 }
 
 // 打开图库面板
