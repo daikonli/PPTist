@@ -64,7 +64,7 @@
             v-contextmenu="contextmenusThumbnailItem"
           >
             <div class="label" :class="{ 'offset-left': index >= 99 }">{{index + 1 }}</div>
-            <ThumbnailSlide class="thumbnail" :slide="element" :size="120" :visible="index < slidesLoadLimit" />
+            <ThumbnailSlide class="thumbnail" :slide="element" :size="146" :visible="index < slidesLoadLimit" />
   
             <div class="note-flag" v-if="element.notes && element.notes.length" @click="openNotesPanel()">{{ element.notes.length }}</div>
           </div>
@@ -374,33 +374,63 @@ const contextmenusThumbnailItem = (): ContextmenuItem[] => {
   user-select: none;
 }
 .add-slide {
-  height: 50px;
   font-size: 12px;
   display: flex;
   flex-shrink: 0;
   border-bottom: 1px solid $borderColor;
   cursor: pointer;
+  padding: 10px 8px;
+  align-items: center;
 
   .btn {
     flex: 1;
+    height: 32px;
+    margin-left: 24px;
     display: flex;
     justify-content: center;
     align-items: center;
+    border: 1px solid $borderColor;
+    border-radius: 4px 0 0 4px;
+    background-color: #fff;
+    transition: all 0.2s;
 
     &:hover {
       background-color: $lightGray;
+      border-color: darken($borderColor, 10%);
     }
   }
-  .select-btn, .collapse-btn {
-    width: 30px;
-    height: 100%;
+  .select-btn {
+    width: 16px;
+    height: 32px;
+    flex-shrink: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-left: 1px solid $borderColor;
+    border: 1px solid $borderColor;
+    border-radius:0 4px 4px 0;
+    background-color: #fff;
+    transition: all 0.2s;
 
     &:hover {
       background-color: $lightGray;
+      border-color: darken($borderColor, 10%);
+    }
+  }
+  .collapse-btn {
+    width: 24px;
+    height: 32px;
+    margin-left: 6px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: $lightGray;
+      border-color: darken($borderColor, 10%);
     }
   }
 
@@ -418,7 +448,7 @@ const contextmenusThumbnailItem = (): ContextmenuItem[] => {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 5px 0;
+  padding: 8px 0;
   position: relative;
 
   .thumbnail {
