@@ -7,4 +7,5 @@ export const enum ToolbarStates {
   MULTI_STYLE = 'multiStyle',
   MULTI_POSITION = 'multiPosition',
   NOTES = 'notes',
+  AI_CHAT = 'aiChat',
 }

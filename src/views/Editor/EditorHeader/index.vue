@@ -80,10 +80,6 @@
       <div class="menu-item" v-tooltip="'查找替换（Ctrl + F）'" @click="toggleSearchPanel()">
         <IconSearch class="icon" />
       </div>
-      <div class="header-divider"></div>
-      <div class="menu-item" v-tooltip="'AI生成PPT'" @click="openAIPPTDialog(); mainMenuVisible = false">
-        <span class="text ai">AI</span>
-      </div>
     </div>
 
     <Drawer

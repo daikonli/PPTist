@@ -36,6 +36,7 @@ import SlideDesignPanel from './SlideDesignPanel/index.vue'
 import MultiPositionPanel from './MultiPositionPanel.vue'
 import MultiStylePanel from './MultiStylePanel.vue'
 import NotesPanel from './NotesPanel.vue'
+import AIChatPanel from './AIChatPanel.vue'
 import Tabs from '@/components/Tabs.vue'
 
 const mainStore = useMainStore()
@@ -59,10 +60,11 @@ const closeToolbar = () => {
 }
 
 const currentTabs = computed(() => {
-  // 如果是动画面板或评论面板，不显示任何tab
+  // 如果是动画面板、评论面板或 AI 聊天面板，不显示任何tab
   if (toolbarState.value === ToolbarStates.EL_ANIMATION || 
       toolbarState.value === ToolbarStates.SLIDE_ANIMATION ||
-      toolbarState.value === ToolbarStates.NOTES) {
+      toolbarState.value === ToolbarStates.NOTES ||
+      toolbarState.value === ToolbarStates.AI_CHAT) {
     return []
   }
   
@@ -109,6 +111,7 @@ const currentPanelComponent = computed(() => {
     [ToolbarStates.MULTI_STYLE]: MultiStylePanel,
     [ToolbarStates.MULTI_POSITION]: MultiPositionPanel,
     [ToolbarStates.NOTES]: NotesPanel,
+    [ToolbarStates.AI_CHAT]: AIChatPanel,
   }
   return panelMap[toolbarState.value] || null
 })
@@ -123,6 +126,7 @@ const currentTitle = computed(() => {
     [ToolbarStates.MULTI_STYLE]: '格式',
     [ToolbarStates.MULTI_POSITION]: '格式',
     [ToolbarStates.NOTES]: '评论',
+    [ToolbarStates.AI_CHAT]: 'AI 助手',
   }
   return titleMap[toolbarState.value] || ''
 })
@@ -137,6 +141,7 @@ const currentIcon = computed(() => {
     [ToolbarStates.MULTI_STYLE]: 'IconTheme',
     [ToolbarStates.MULTI_POSITION]: 'IconFullSelection',
     [ToolbarStates.NOTES]: 'IconComment',
+    [ToolbarStates.AI_CHAT]: 'IconMagic',
   }
   return iconMap[toolbarState.value] || 'IconTheme'
 })

@@ -5,13 +5,7 @@
       <IconNext class="handler-item" :class="{ 'disable': !canRedo }" v-tooltip="'重做（Ctrl + Y）'" @click="redo()" />
       <div class="more">
         <Divider type="vertical" style="height: 20px;" />
-        <Popover class="more-icon" trigger="click" v-model:value="moreVisible" :offset="10">
-          <template #content>
-            <PopoverMenuItem class="popover-menu-item" center @click="toggleSelectPanel(); moreVisible = false"><IconMoveOne class="icon" />选择窗格</PopoverMenuItem>
-          </template>
-          <IconMore class="handler-item" />
-        </Popover>
-        <IconMoveOne class="handler-item" :class="{ 'active': showSelectPanel }" v-tooltip="'选择窗格'" @click="toggleSelectPanel()" />
+        <!-- <IconMoveOne class="handler-item" :class="{ 'active': showSelectPanel }" v-tooltip="'选择窗格'" @click="toggleSelectPanel()" /> -->
       </div>
     </div>
 
@@ -105,6 +99,9 @@
       <div class="toolbar-divider"></div>
       <div class="insert-handler-item" :class="{ 'active': showToolbar && toolbarState === ToolbarStates.NOTES }" v-tooltip="'评论'" @click="openNotesPanel()">
         <IconComment class="icon" /> <span class="text">评论</span>
+      </div>
+      <div class="insert-handler-item" :class="{ 'active': showToolbar && toolbarState === ToolbarStates.AI_CHAT }" v-tooltip="'AI 助手'" @click="openAIChatPanel()">
+        <span class="ai-text">AI</span>
       </div>
     </div>
 
@@ -304,6 +301,19 @@ const openNotesPanel = () => {
   }
 }
 
+// 切换 AI 聊天面板
+const openAIChatPanel = () => {
+  // 如果 AI 聊天面板已经打开，则关闭工具栏
+  if (showToolbar.value && toolbarState.value === ToolbarStates.AI_CHAT) {
+    mainStore.setToolbarVisibility(false)
+  }
+  else {
+    // 否则打开工具栏并显示 AI 聊天面板
+    mainStore.setToolbarState(ToolbarStates.AI_CHAT)
+    mainStore.setToolbarVisibility(true)
+  }
+}
+
 // 打开图库面板
 const openImageLibPanel = () => {
   mainStore.setImageLibPanelState(true)
@@ -383,6 +393,15 @@ const openImageLibPanel = () => {
 
     .icon {
       margin-right: 4px;
+    }
+
+    .ai-text {
+      font-weight: 700;
+      font-size: 16px;
+      background: linear-gradient(270deg, #d897fd, #33bcfc);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     &.group-btn {
