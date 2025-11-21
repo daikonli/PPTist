@@ -1,77 +1,109 @@
-export const FORMULA_LIST = [
-  {
-    label: '高斯公式',
-    latex: `\\int\\int\\int _ { \\Omega } \\left( \\frac { \\partial {P} } { \\partial {x} } + \\frac { \\partial {Q} } { \\partial {y} } + \\frac { \\partial {R} }{ \\partial {z} } \\right) \\mathrm { d } V = \\oint _ { \\partial \\Omega } ( P \\cos \\alpha + Q \\cos \\beta + R \\cos \\gamma ) \\mathrm{ d} S`
+interface FormulaItem {
+  label: string
+  latex: string
+}
+
+interface SubjectFormulas {
+  [subject: string]: FormulaItem[]
+}
+
+interface StageFormulas {
+  [stage: string]: SubjectFormulas
+}
+
+// 按学段和学科分类的公式列表
+export const FORMULA_LIST_BY_SUBJECT: StageFormulas = {
+  '小学': {
+    '数学': [
+      { label: '加法交换律', latex: 'a + b = b + a' },
+      { label: '乘法分配律', latex: '(a + b) \\times c = a \\times c + b \\times c' },
+      { label: '长方形面积', latex: 'S = a \\times b' },
+      { label: '正方形面积', latex: 'S = a^2' },
+      { label: '圆的面积', latex: 'S = \\pi r^2' },
+      { label: '圆的周长', latex: 'C = 2\\pi r' },
+    ],
   },
-  {
-    label: '傅里叶级数',
-    latex: `f(x) = \\frac {a_0} 2 + \\sum_{n = 1}^\\infty {({a_n}\\cos {nx} + {b_n}\\sin {nx})}`,
+  '初中': {
+    '数学': [
+      { label: '勾股定理', latex: 'a^2 + b^2 = c^2' },
+      { label: '一元二次方程求根公式', latex: 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}' },
+      { label: '完全平方公式', latex: '(a \\pm b)^2 = a^2 \\pm 2ab + b^2' },
+      { label: '平方差公式', latex: 'a^2 - b^2 = (a + b)(a - b)' },
+      { label: '圆的面积', latex: 'S = \\pi r^2' },
+      { label: '三角形面积', latex: 'S = \\frac{1}{2}ah' },
+    ],
+    '物理': [
+      { label: '速度公式', latex: 'v = \\frac{s}{t}' },
+      { label: '密度公式', latex: '\\rho = \\frac{m}{V}' },
+      { label: '欧姆定律', latex: 'U = IR' },
+      { label: '电功率', latex: 'P = UI' },
+    ],
+    '化学': [
+      { label: '质量守恒定律', latex: 'm_{反应物} = m_{生成物}' },
+    ],
   },
-  {
-    label: '泰勒展开式',
-    latex: `e ^ { x } = 1 + \\frac { x } { 1 ! } + \\frac { x ^ { 2 } } { 2 ! } + \\frac { x ^ { 3 } } { 3 ! } + ... , \\quad - \\infty < x < \\infty`,
+  '高中': {
+    '数学': [
+      { label: '高斯公式', latex: `\\int\\int\\int _ { \\Omega } \\left( \\frac { \\partial {P} } { \\partial {x} } + \\frac { \\partial {Q} } { \\partial {y} } + \\frac { \\partial {R} }{ \\partial {z} } \\right) \\mathrm { d } V = \\oint _ { \\partial \\Omega } ( P \\cos \\alpha + Q \\cos \\beta + R \\cos \\gamma ) \\mathrm{ d} S` },
+      { label: '傅里叶级数', latex: `f(x) = \\frac {a_0} 2 + \\sum_{n = 1}^\\infty {({a_n}\\cos {nx} + {b_n}\\sin {nx})}` },
+      { label: '泰勒展开式', latex: `e ^ { x } = 1 + \\frac { x } { 1 ! } + \\frac { x ^ { 2 } } { 2 ! } + \\frac { x ^ { 3 } } { 3 ! } + ... , \\quad - \\infty < x < \\infty` },
+      { label: '定积分', latex: `\\lim_ { n \\rightarrow + \\infty } \\sum _ { i = 1 } ^ { n } f \\left[ a + \\frac { i } { n } ( b - a ) \\right] \\frac { b - a } { n } = \\int _ { a } ^ { b } f ( x ) dx` },
+      { label: '三角恒等式1', latex: `\\sin \\alpha \\pm \\sin \\beta = 2 \\sin \\frac { 1 } { 2 } ( \\alpha \\pm \\beta ) \\cos \\frac { 1 } { 2 } ( \\alpha \\mp \\beta )` },
+      { label: '三角恒等式2', latex: `\\cos \\alpha + \\cos \\beta = 2 \\cos \\frac { 1 } { 2 } ( \\alpha + \\beta ) \\cos \\frac { 1 } { 2 } ( \\alpha - \\beta )` },
+      { label: '和的展开式', latex: `( 1 + x ) ^ { n } = 1 + \\frac { n x } { 1 ! } + \\frac { n ( n - 1 ) x ^ { 2 } } { 2 ! } + ...` },
+      { label: '欧拉公式', latex: ` e^{ix} = \\cos {x} + i\\sin {x}` },
+      { label: '贝努利方程', latex: `\\frac {dy} {dx} + P(x)y = Q(x) y^n ({n} \\not= {0,1})` },
+      { label: '全微分方程', latex: `du(x,y) = P(x,y)dx + Q(x,y)dy = 0` },
+      { label: '非齐次方程', latex: `y = (\\int Q(x) e^{\\int {P(x)dx}}dx + C)e^{-\\int {P(x)dx}}` },
+      { label: '柯西中值定理', latex: `\\frac{{f(b) - f(a)}}{{F(b) - F(a)}} = \\frac{{f'(\\xi )}}{{F'(\\xi )}}` },
+      { label: '拉格朗日中值定理', latex: `f(b) - f(a) = f'(\\xi )(b - a)` },
+      { label: '导数公式', latex: `(\\arcsin x)' = \\frac{1}{{\\sqrt {1 - x^2} }}` },
+      { label: '三角函数积分', latex: `\\int {tgxdx = - \\ln \\left| {\\cos x} \\right| + C}` },
+      { label: '二次曲面', latex: `\\frac{{{x^2}}}{{{a^2}}} + \\frac{{{y^2}}}{{{b^2}}} - \\frac{{{z^2}}}{{{c^2}}} = 1` },
+      { label: '二阶微分', latex: `\\frac {{d^2}y} {dx^2} + P(x) \\frac {dy} {dx} + Q(x)y = f(x)` },
+      { label: '方向导数', latex: `\\frac{{\\partial f}}{{\\partial l}} = \\frac{{\\partial f}}{{\\partial x}}\\cos \\phi + \\frac{{\\partial f}}{{\\partial y}}\\sin \\phi` },
+    ],
+    '物理': [
+      { label: '牛顿第二定律', latex: 'F = ma' },
+      { label: '动能定理', latex: 'E_k = \\frac{1}{2}mv^2' },
+      { label: '万有引力定律', latex: 'F = G\\frac{m_1m_2}{r^2}' },
+      { label: '动量守恒', latex: 'm_1v_1 + m_2v_2 = m_1v_1\' + m_2v_2\'' },
+    ],
+    '化学': [
+      { label: '理想气体状态方程', latex: 'PV = nRT' },
+      { label: 'pH值', latex: 'pH = -\\lg[H^+]' },
+    ],
   },
-  {
-    label: '定积分',
-    latex: `\\lim_ { n \\rightarrow + \\infty } \\sum _ { i = 1 } ^ { n } f \\left[ a + \\frac { i } { n } ( b - a ) \\right] \\frac { b - a } { n } = \\int _ { a } ^ { b } f ( x ) dx`,
+  '中职': {
+    '数学': [
+      { label: '二次函数', latex: 'y = ax^2 + bx + c' },
+      { label: '正弦定理', latex: '\\frac{a}{\\sin A} = \\frac{b}{\\sin B} = \\frac{c}{\\sin C}' },
+      { label: '余弦定理', latex: 'a^2 = b^2 + c^2 - 2bc\\cos A' },
+    ],
   },
-  {
-    label: '三角恒等式1',
-    latex: `\\sin \\alpha \\pm \\sin \\beta = 2 \\sin \\frac { 1 } { 2 } ( \\alpha \\pm \\beta ) \\cos \\frac { 1 } { 2 } ( \\alpha \\mp \\beta )`,
+  '小学（五四制）': {
+    '数学': [
+      { label: '加法交换律', latex: 'a + b = b + a' },
+      { label: '乘法分配律', latex: '(a + b) \\times c = a \\times c + b \\times c' },
+      { label: '长方形面积', latex: 'S = a \\times b' },
+      { label: '正方形面积', latex: 'S = a^2' },
+    ],
   },
-  {
-    label: '三角恒等式2',
-    latex: `\\cos \\alpha + \\cos \\beta = 2 \\cos \\frac { 1 } { 2 } ( \\alpha + \\beta ) \\cos \\frac { 1 } { 2 } ( \\alpha - \\beta )`,
+  '初中（五四制）': {
+    '数学': [
+      { label: '勾股定理', latex: 'a^2 + b^2 = c^2' },
+      { label: '一元二次方程求根公式', latex: 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}' },
+      { label: '完全平方公式', latex: '(a \\pm b)^2 = a^2 \\pm 2ab + b^2' },
+    ],
+    '物理': [
+      { label: '速度公式', latex: 'v = \\frac{s}{t}' },
+      { label: '密度公式', latex: '\\rho = \\frac{m}{V}' },
+    ],
   },
-  {
-    label: '和的展开式',
-    latex: `( 1 + x ) ^ { n } = 1 + \\frac { n x } { 1 ! } + \\frac { n ( n - 1 ) x ^ { 2 } } { 2 ! } + ...`,
-  },
-  {
-    label: '欧拉公式',
-    latex: ` e^{ix} = \\cos {x} + i\\sin {x}`,
-  },
-  {
-    label: '贝努利方程',
-    latex: `\\frac {dy} {dx} + P(x)y = Q(x) y^n ({n} \\not= {0,1})`,
-  },
-  {
-    label: '全微分方程',
-    latex: `du(x,y) = P(x,y)dx + Q(x,y)dy = 0`,
-  },
-  {
-    label: '非齐次方程',
-    latex: `y = (\\int Q(x) e^{\\int {P(x)dx}}dx + C)e^{-\\int {P(x)dx}}`,
-  },
-  {
-    label: '柯西中值定理',
-    latex: `\\frac{{f(b) - f(a)}}{{F(b) - F(a)}} = \\frac{{f'(\\xi )}}{{F'(\\xi )}}`,
-  },
-  {
-    label: '拉格朗日中值定理',
-    latex: `f(b) - f(a) = f'(\\xi )(b - a)`,
-  },
-  {
-    label: '导数公式',
-    latex: `(\\arcsin x)' = \\frac{1}{{\\sqrt {1 - x^2} }}`,
-  },
-  {
-    label: '三角函数积分',
-    latex: `\\int {tgxdx = - \\ln \\left| {\\cos x} \\right| + C}`,
-  },
-  {
-    label: '二次曲面',
-    latex: `\\frac{{{x^2}}}{{{a^2}}} + \\frac{{{y^2}}}{{{b^2}}} - \\frac{{{z^2}}}{{{c^2}}} = 1`,
-  },
-  {
-    label: '二阶微分',
-    latex: `\\frac {{d^2}y} {dx^2} + P(x) \\frac {dy} {dx} + Q(x)y = f(x)`,
-  },
-  {
-    label: '方向导数',
-    latex: `\\frac{{\\partial f}}{{\\partial l}} = \\frac{{\\partial f}}{{\\partial x}}\\cos \\phi + \\frac{{\\partial f}}{{\\partial y}}\\sin \\phi`,
-  },
-]
+}
+
+// 兼容旧的导出
+export const FORMULA_LIST = FORMULA_LIST_BY_SUBJECT['高中']['数学']
 
 export const SYMBOL_LIST = [
   {

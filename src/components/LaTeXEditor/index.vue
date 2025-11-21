@@ -37,15 +37,22 @@
             </div>
           </div>
           <div class="formula" v-else>
-            <div class="formula-item" v-for="item in formulaList" :key="item.label">
-              <div class="formula-title">{{item.label}}</div>
-              <div class="formula-item-content" @click="latex = item.latex">
-                <FormulaContent
-                  :width="236"
-                  :height="60"
-                  :latex="item.latex"
-                />
+            <Cascader 
+              :options="cascaderOptions" 
+              v-model:value="selectedCategory"
+            />
+            <div class="formula-list">
+              <div class="formula-item" v-for="item in formulaList" :key="item.label">
+                <div class="formula-title">{{item.label}}</div>
+                <div class="formula-item-content" @click="latex = item.latex">
+                  <FormulaContent
+                    :width="236"
+                    :height="60"
+                    :latex="item.latex"
+                  />
+                </div>
               </div>
+              <div class="empty-hint" v-if="formulaList.length === 0">暂无公式</div>
             </div>
           </div>
         </div>
@@ -61,7 +68,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import { hfmath } from './hfmath'
-import { FORMULA_LIST, SYMBOL_LIST } from '@/configs/latex'
+import { FORMULA_LIST_BY_SUBJECT, SYMBOL_LIST } from '@/configs/latex'
 import message from '@/utils/message'
 
 import FormulaContent from './FormulaContent.vue'
@@ -69,6 +76,7 @@ import SymbolContent from './SymbolContent.vue'
 import Button from '../Button.vue'
 import TextArea from '../TextArea.vue'
 import Tabs from '../Tabs.vue'
+import Cascader from '../Cascader.vue'
 
 interface TabItem {
   key: 'symbol' | 'formula'
@@ -98,7 +106,29 @@ const emit = defineEmits<{
   (event: 'close'): void
 }>()
 
-const formulaList = FORMULA_LIST
+// 级联选择器数据
+const cascaderOptions = computed(() => {
+  return Object.keys(FORMULA_LIST_BY_SUBJECT).map(stage => ({
+    label: stage,
+    value: stage,
+    children: Object.keys(FORMULA_LIST_BY_SUBJECT[stage]).map(subject => ({
+      label: subject,
+      value: subject,
+    }))
+  }))
+})
+
+// 默认选中高中数学
+const selectedCategory = ref<string[]>(['高中', '数学'])
+
+// 根据选择的学段和学科获取公式列表
+const formulaList = computed(() => {
+  const [stage, subject] = selectedCategory.value
+  if (stage && subject && FORMULA_LIST_BY_SUBJECT[stage]?.[subject]) {
+    return FORMULA_LIST_BY_SUBJECT[stage][subject]
+  }
+  return []
+})
 
 const symbolTabs = SYMBOL_LIST.map(item => ({
   label: item.label,
@@ -211,9 +241,21 @@ const insertSymbol = (latex: string) => {
 }
 .formula {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.formula-list {
+  flex: 1;
   padding: 12px;
+  overflow: auto;
 
   @include overflow-overlay();
+}
+.empty-hint {
+  color: #999;
+  font-size: 13px;
+  text-align: center;
+  padding: 20px;
 }
 .formula-item {
   & + .formula-item {
