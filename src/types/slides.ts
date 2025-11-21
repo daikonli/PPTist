@@ -723,7 +723,7 @@ export type SlideType = 'cover' | 'contents' | 'transition' | 'content' | 'end'
  * 
  * elements: 元素集合
  * 
- * notes?: 批注
+ * notes?: 评论
  * 
  * remark?: 备注
  * 

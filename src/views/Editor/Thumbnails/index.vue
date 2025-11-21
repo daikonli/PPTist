@@ -229,7 +229,7 @@ const handleDragEnd = (eventData: { newIndex: number; oldIndex: number }) => {
   sortSlides(newIndex, oldIndex)
 }
 
-// 打开批注面板
+// 打开评论面板
 const openNotesPanel = () => {
   mainStore.setNotesPanelState(true)
 }

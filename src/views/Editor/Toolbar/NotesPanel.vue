@@ -1,18 +1,5 @@
 <template>
-  <MoveablePanel 
-    class="notes-panel" 
-    :width="300" 
-    :height="560" 
-    :title="``" 
-    :left="-270" 
-    :top="90"
-    :minWidth="300"
-    :minHeight="400"
-    :maxWidth="480"
-    :maxHeight="780"
-    resizeable
-    @close="close()"
-  >
+  <div class="notes-panel">
     <div class="container">
       <div class="notes" ref="notesRef">
         <div class="note" :class="{ 'active': activeNoteId === note.id }" v-for="note in notes" :key="note.id" @click="handleClickNote(note)">
@@ -73,7 +60,7 @@
         </div>
       </div>
     </div>
-  </MoveablePanel>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -83,7 +70,6 @@ import { nanoid } from 'nanoid'
 import { useMainStore, useSlidesStore } from '@/store'
 import type { Note } from '@/types/slides'
 
-import MoveablePanel from '@/components/MoveablePanel.vue'
 import TextArea from '@/components/TextArea.vue'
 import Button from '@/components/Button.vue'
 
@@ -198,28 +184,35 @@ const handleClickNote = (note: Note) => {
 const clear = () => {
   slidesStore.updateSlide({ notes: [] })
 }
-
-const close = () => {
-  mainStore.setNotesPanelState(false)
-}
 </script>
 
 <style lang="scss" scoped>
 .notes-panel {
-  height: 100%;
-  font-size: 12px;
-  user-select: none;
-}
-.container {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  margin: -12px;
+}
+.panel-title {
+  flex-shrink: 0;
+  padding: 12px 12px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0 12px 12px;
 }
 .notes {
   flex: 1;
   overflow: auto;
-  margin: 0 -10px;
-  padding: 2px 12px;
+  padding: 2px 0;
+  
+  @include overflow-overlay();
 }
 .empty {
   width: 100%;
@@ -229,11 +222,13 @@ const close = () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 12px;
 }
 .note {
   border: 1px solid #eee;
   border-radius: 4px;
   padding: 10px;
+  font-size: 12px;
 
   & + .note {
     margin-top: 10px;
@@ -269,30 +264,40 @@ const close = () => {
       justify-content: center;
       align-items: center;
       margin-right: 10px;
+      flex-shrink: 0;
     }
 
     .username {
-      font-size: 14px;
+      font-size: 13px;
+      font-weight: 500;
     }
     .time {
-      font-size: 12px;
+      font-size: 11px;
       color: #aaa;
+      margin-top: 2px;
     }
   }
   .btns {
     display: flex;
     align-items: center;
     opacity: 0;
+    transition: opacity 0.2s;
 
     .btn {
       margin-left: 5px;
       cursor: pointer;
+      font-size: 12px;
 
       &:hover {
         text-decoration: underline;
         color: $themeColor;
       }
     }
+  }
+  .content {
+    font-size: 13px;
+    line-height: 1.6;
+    word-break: break-word;
   }
   .replies {
     margin-left: 20px;
@@ -325,7 +330,6 @@ const close = () => {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-
   
   .footer {
     margin-top: 10px;
@@ -339,6 +343,10 @@ const close = () => {
         font-size: 18px;
         color: #666;
         cursor: pointer;
+        
+        &:hover {
+          color: $themeColor;
+        }
       }
     }
 
@@ -348,3 +356,4 @@ const close = () => {
   }
 }
 </style>
+

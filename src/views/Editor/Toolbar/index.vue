@@ -35,6 +35,7 @@ import AnimationPanel from './AnimationPanel.vue'
 import SlideDesignPanel from './SlideDesignPanel/index.vue'
 import MultiPositionPanel from './MultiPositionPanel.vue'
 import MultiStylePanel from './MultiStylePanel.vue'
+import NotesPanel from './NotesPanel.vue'
 import Tabs from '@/components/Tabs.vue'
 
 const mainStore = useMainStore()
@@ -48,7 +49,6 @@ const multiSelectTabs = [
   { label: '样式（多选）', key: ToolbarStates.MULTI_STYLE },
   { label: '位置（多选）', key: ToolbarStates.MULTI_POSITION },
 ]
-const animationTabs: { label: string; key: ToolbarStates }[] = []
 
 const setToolbarState = (value: ToolbarStates) => {
   mainStore.setToolbarState(value)
@@ -59,9 +59,11 @@ const closeToolbar = () => {
 }
 
 const currentTabs = computed(() => {
-  // 如果是动画面板，不显示任何tab
-  if (toolbarState.value === ToolbarStates.EL_ANIMATION || toolbarState.value === ToolbarStates.SLIDE_ANIMATION) {
-    return animationTabs
+  // 如果是动画面板或评论面板，不显示任何tab
+  if (toolbarState.value === ToolbarStates.EL_ANIMATION || 
+      toolbarState.value === ToolbarStates.SLIDE_ANIMATION ||
+      toolbarState.value === ToolbarStates.NOTES) {
+    return []
   }
   
   if (!activeElementIdList.value.length) return []
@@ -106,6 +108,7 @@ const currentPanelComponent = computed(() => {
     [ToolbarStates.SLIDE_ANIMATION]: AnimationPanel,
     [ToolbarStates.MULTI_STYLE]: MultiStylePanel,
     [ToolbarStates.MULTI_POSITION]: MultiPositionPanel,
+    [ToolbarStates.NOTES]: NotesPanel,
   }
   return panelMap[toolbarState.value] || null
 })
@@ -119,6 +122,7 @@ const currentTitle = computed(() => {
     [ToolbarStates.SLIDE_ANIMATION]: '动画',
     [ToolbarStates.MULTI_STYLE]: '格式',
     [ToolbarStates.MULTI_POSITION]: '格式',
+    [ToolbarStates.NOTES]: '评论',
   }
   return titleMap[toolbarState.value] || ''
 })
@@ -132,6 +136,7 @@ const currentIcon = computed(() => {
     [ToolbarStates.SLIDE_ANIMATION]: 'IconEffects',
     [ToolbarStates.MULTI_STYLE]: 'IconTheme',
     [ToolbarStates.MULTI_POSITION]: 'IconFullSelection',
+    [ToolbarStates.NOTES]: 'IconComment',
   }
   return iconMap[toolbarState.value] || 'IconTheme'
 })

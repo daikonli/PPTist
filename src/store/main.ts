@@ -74,7 +74,7 @@ export const useMainStore = defineStore('main', {
     shapeFormatPainter: null, // 形状格式刷
     showSelectPanel: false, // 打开选择面板
     showSearchPanel: false, // 打开查找替换面板
-    showNotesPanel: false, // 打开批注面板
+    showNotesPanel: false, // 打开评论面板
     showSymbolPanel: false, // 打开符号面板
     showMarkupPanel: false, // 打开类型标注面板
     showImageLibPanel: false, // 打开图片库面板
@@ -108,20 +108,23 @@ export const useMainStore = defineStore('main', {
 
       // 当选中元素时，自动显示右侧工具栏
       if (activeElementIdList.length > 0) {
+        const wasToolbarClosed = !this.showToolbar // 记录工具栏之前是否关闭
         this.showToolbar = true
         
         // 根据选中元素数量设置合适的工具栏状态
         if (activeElementIdList.length === 1) {
-          // 单选：如果当前是幻灯片面板或多选面板，则切换到单选样式面板
-          if (this.toolbarState === ToolbarStates.SLIDE_DESIGN || 
+          // 单选：如果工具栏之前是关闭的，或者当前是幻灯片面板或多选面板，则切换到单选样式面板
+          if (wasToolbarClosed ||
+              this.toolbarState === ToolbarStates.SLIDE_DESIGN || 
               this.toolbarState === ToolbarStates.SLIDE_ANIMATION ||
               this.toolbarState === ToolbarStates.MULTI_STYLE ||
               this.toolbarState === ToolbarStates.MULTI_POSITION) {
             this.toolbarState = ToolbarStates.EL_STYLE
           }
         } else {
-          // 多选：如果当前是幻灯片面板或单选面板，则切换到多选样式面板
-          if (this.toolbarState === ToolbarStates.SLIDE_DESIGN || 
+          // 多选：如果工具栏之前是关闭的，或者当前是幻灯片面板或单选面板，则切换到多选样式面板
+          if (wasToolbarClosed ||
+              this.toolbarState === ToolbarStates.SLIDE_DESIGN || 
               this.toolbarState === ToolbarStates.SLIDE_ANIMATION ||
               this.toolbarState === ToolbarStates.EL_STYLE ||
               this.toolbarState === ToolbarStates.EL_POSITION ||

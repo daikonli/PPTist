@@ -42,7 +42,6 @@
   <!-- 各种弹出面板 -->
   <SelectPanel v-if="showSelectPanel" />
   <SearchPanel v-if="showSearchPanel" />
-  <NotesPanel v-if="showNotesPanel" />
   <MarkupPanel v-if="showMarkupPanel" />
   <SymbolPanel v-if="showSymbolPanel" />
   <ImageLibPanel v-if="showImageLibPanel" />
@@ -86,7 +85,6 @@ import Remark from './Remark/index.vue'
 import ExportDialog from './ExportDialog/index.vue'
 import SelectPanel from './SelectPanel.vue'
 import SearchPanel from './SearchPanel.vue'
-import NotesPanel from './NotesPanel.vue'
 import SymbolPanel from './SymbolPanel.vue'
 import MarkupPanel from './MarkupPanel.vue'
 import ImageLibPanel from './ImageLibPanel.vue'
@@ -99,7 +97,6 @@ const {
   dialogForExport,
   showSelectPanel,
   showSearchPanel,
-  showNotesPanel,
   showSymbolPanel,
   showMarkupPanel,
   showImageLibPanel,
@@ -148,7 +145,7 @@ usePasteEvent()
 // 布局常量
 $header-height: 64px;
 $thumbnails-width: 196px;
-$toolbar-width: 260px;
+$toolbar-width: 294px;
 $canvas-tool-height: 52px;
 
 // 主容器

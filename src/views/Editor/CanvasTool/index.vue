@@ -103,7 +103,7 @@
         <IconEffects class="icon" /> <span class="text">动画</span>
       </div>
       <div class="toolbar-divider"></div>
-      <div class="insert-handler-item" :class="{ 'active': showNotesPanel }" v-tooltip="'评论'" @click="toggleNotesPanel()">
+      <div class="insert-handler-item" :class="{ 'active': showToolbar && toolbarState === ToolbarStates.NOTES }" v-tooltip="'评论'" @click="openNotesPanel()">
         <IconComment class="icon" /> <span class="text">评论</span>
       </div>
     </div>
@@ -162,7 +162,7 @@ import Popover from '@/components/Popover.vue'
 import PopoverMenuItem from '@/components/PopoverMenuItem.vue'
 
 const mainStore = useMainStore()
-const { creatingElement, creatingCustomShape, showSelectPanel, showSearchPanel, showNotesPanel, showSymbolPanel, toolbarState, showToolbar, activeElementIdList } = storeToRefs(mainStore)
+const { creatingElement, creatingCustomShape, showSelectPanel, showSymbolPanel, toolbarState, showToolbar, activeElementIdList } = storeToRefs(mainStore)
 const { canUndo, canRedo } = storeToRefs(useSnapshotStore())
 
 // 格式按钮激活状态
@@ -254,16 +254,6 @@ const toggleSelectPanel = () => {
   mainStore.setSelectPanelState(!showSelectPanel.value)
 }
 
-// 打开搜索替换面板
-const toggleSraechPanel = () => {
-  mainStore.setSearchPanelState(!showSearchPanel.value)
-}
-
-// 打开评论面板
-const toggleNotesPanel = () => {
-  mainStore.setNotesPanelState(!showNotesPanel.value)
-}
-
 // 打开符号面板
 const toggleSymbolPanel = () => {
   mainStore.setSymbolPanelState(!showSymbolPanel.value)
@@ -297,6 +287,19 @@ const openAnimationPanel = () => {
   else {
     // 否则打开工具栏并显示动画面板
     mainStore.setToolbarState(ToolbarStates.EL_ANIMATION)
+    mainStore.setToolbarVisibility(true)
+  }
+}
+
+// 切换评论面板
+const openNotesPanel = () => {
+  // 如果评论面板已经打开，则关闭工具栏
+  if (showToolbar.value && toolbarState.value === ToolbarStates.NOTES) {
+    mainStore.setToolbarVisibility(false)
+  }
+  else {
+    // 否则打开工具栏并显示评论面板
+    mainStore.setToolbarState(ToolbarStates.NOTES)
     mainStore.setToolbarVisibility(true)
   }
 }
