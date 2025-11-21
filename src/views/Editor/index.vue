@@ -54,18 +54,6 @@
   >
     <ExportDialog />
   </Modal>
-
-  <!-- AI PPT 对话框 -->
-  <Modal
-    :visible="showAIPPTDialog" 
-    :width="720"
-    :closeOnClickMask="false"
-    :closeOnEsc="false"
-    closeButton
-    @closed="handleCloseAIPPTDialog"
-  >
-    <AIPPTDialog />
-  </Modal>
 </template>
 
 <script lang="ts" setup>
@@ -88,7 +76,6 @@ import SearchPanel from './SearchPanel.vue'
 import SymbolPanel from './SymbolPanel.vue'
 import MarkupPanel from './MarkupPanel.vue'
 import ImageLibPanel from './ImageLibPanel.vue'
-import AIPPTDialog from './AIPPTDialog.vue'
 import Modal from '@/components/Modal.vue'
 
 // Store
@@ -100,7 +87,6 @@ const {
   showSymbolPanel,
   showMarkupPanel,
   showImageLibPanel,
-  showAIPPTDialog,
   showToolbar,
   showThumbnails,
 } = storeToRefs(mainStore)
@@ -130,10 +116,6 @@ const handleExpandThumbnails = () => {
 
 const handleCloseExportDialog = () => {
   mainStore.setDialogForExport('')
-}
-
-const handleCloseAIPPTDialog = () => {
-  mainStore.setAIPPTDialogState(false)
 }
 
 // 初始化钩子

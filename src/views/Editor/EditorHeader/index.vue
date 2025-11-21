@@ -117,7 +117,7 @@ const mainStore = useMainStore()
 const slidesStore = useSlidesStore()
 const { title } = storeToRefs(slidesStore)
 const { enterScreening, enterScreeningFromStart } = useScreening()
-const { importSpecificFile, importPPTXFile, importJSON, exporting } = useImport()
+const { importPPTXFile, importJSON, exporting } = useImport()
 const { resetSlides } = useSlideHandler()
 
 const mainMenuVisible = ref(false)
@@ -144,10 +144,6 @@ const setDialogForExport = (type: DialogForExportTypes) => {
 
 const openMarkupPanel = () => {
   mainStore.setMarkupPanelState(true)
-}
-
-const openAIPPTDialog = () => {
-  mainStore.setAIPPTDialogState(true)
 }
 
 const toggleSearchPanel = () => {
@@ -249,25 +245,6 @@ const toggleSearchPanel = () => {
   .icon {
     font-size: 22px;
     margin-right: 16px;
-  }
-  .aippt-content {
-    display: flex;
-    flex-direction: column;
-  }
-  .aippt {
-    font-weight: 700;
-    font-size: 16px;
-
-    span {
-      background: linear-gradient(270deg, #d897fd, #33bcfc);
-      background-clip: text;
-      color: transparent;
-    }
-  }
-  .aippt-subtitle {
-    font-size: 12px;
-    color: #777;
-    margin-top: 5px;
   }
 }
 
