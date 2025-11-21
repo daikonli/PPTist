@@ -146,10 +146,10 @@ usePasteEvent()
 
 <style lang="scss" scoped>
 // 布局常量
-$header-height: 40px;
+$header-height: 64px;
 $thumbnails-width: 196px;
 $toolbar-width: 260px;
-$canvas-tool-height: 50px;
+$canvas-tool-height: 52px;
 
 // 主容器
 .pptist-editor {

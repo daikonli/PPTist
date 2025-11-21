@@ -7,15 +7,11 @@
         <Divider type="vertical" style="height: 20px;" />
         <Popover class="more-icon" trigger="click" v-model:value="moreVisible" :offset="10">
           <template #content>
-            <PopoverMenuItem class="popover-menu-item" center @click="toggleNotesPanel(); moreVisible = false"><IconComment class="icon" />批注面板</PopoverMenuItem>
             <PopoverMenuItem class="popover-menu-item" center @click="toggleSelectPanel(); moreVisible = false"><IconMoveOne class="icon" />选择窗格</PopoverMenuItem>
-            <PopoverMenuItem class="popover-menu-item" center @click="toggleSraechPanel(); moreVisible = false"><IconSearch class="icon" />查找替换</PopoverMenuItem>
           </template>
           <IconMore class="handler-item" />
         </Popover>
-        <IconComment class="handler-item" :class="{ 'active': showNotesPanel }" v-tooltip="'批注面板'" @click="toggleNotesPanel()" />
         <IconMoveOne class="handler-item" :class="{ 'active': showSelectPanel }" v-tooltip="'选择窗格'" @click="toggleSelectPanel()" />
-        <IconSearch class="handler-item" :class="{ 'active': showSearchPanel }" v-tooltip="'查找/替换（Ctrl + F）'" @click="toggleSraechPanel()" />
       </div>
     </div>
 
@@ -31,10 +27,10 @@
           <IconDown class="arrow" />
         </Popover>
       </div>
-      <div class="insert-handler-item group-btn" :class="{ 'active': creatingCustomShape || creatingElement?.type === 'shape' }" v-tooltip="'插入形状'" :offset="10">
+      <div class="insert-handler-item group-btn" :class="{ 'active': creatingCustomShape || creatingElement?.type === 'shape' || creatingElement?.type === 'line' }" v-tooltip="'插入形状'" :offset="10">
         <Popover trigger="click" style="height: 100%;" v-model:value="shapePoolVisible" :offset="10">
           <template #content>
-            <ShapePool @select="shape => drawShape(shape)" />
+            <ShapePool @select="shape => drawShape(shape)" @selectLine="line => drawLine(line)" />
           </template>
           <div class="group-btn-main"><IconGraphicDesign class="icon" /> <span class="text">形状</span></div>
         </Popover>
@@ -62,14 +58,6 @@
           <IconDown class="arrow" />
         </Popover>
       </div>
-      <Popover trigger="click" v-model:value="linePoolVisible" :offset="10">
-        <template #content>
-          <LinePool @select="line => drawLine(line)" />
-        </template>
-        <div class="insert-handler-item" :class="{ 'active': creatingElement?.type === 'line' }" v-tooltip="'插入线条'">
-          <IconConnection class="icon" /> <span class="text">线条</span>
-        </div>
-      </Popover>
       <Popover trigger="click" v-model:value="chartPoolVisible" :offset="10">
         <template #content>
           <ChartPool @select="chart => { createChartElement(chart); chartPoolVisible = false }" />
@@ -107,11 +95,16 @@
       <div class="insert-handler-item" :class="{ 'active': showSymbolPanel }" v-tooltip="'插入符号'" @click="toggleSymbolPanel()">
         <IconSymbol class="icon" /> <span class="text">符号</span>
       </div>
+      <div class="toolbar-divider"></div>
       <div class="insert-handler-item" :class="{ 'active': isFormatActive }" v-tooltip="'格式'" @click="openDesignPanel()">
         <IconTheme class="icon" /> <span class="text">格式</span>
       </div>
       <div class="insert-handler-item" :class="{ 'active': showToolbar && toolbarState === ToolbarStates.EL_ANIMATION }" v-tooltip="'动画'" @click="openAnimationPanel()">
         <IconEffects class="icon" /> <span class="text">动画</span>
+      </div>
+      <div class="toolbar-divider"></div>
+      <div class="insert-handler-item" :class="{ 'active': showNotesPanel }" v-tooltip="'评论'" @click="toggleNotesPanel()">
+        <IconComment class="icon" /> <span class="text">评论</span>
       </div>
     </div>
 
@@ -158,7 +151,6 @@ import useHistorySnapshot from '@/hooks/useHistorySnapshot'
 import useCreateElement from '@/hooks/useCreateElement'
 
 import ShapePool from './ShapePool.vue'
-import LinePool from './LinePool.vue'
 import ChartPool from './ChartPool.vue'
 import TableGenerator from './TableGenerator.vue'
 import MediaInput from './MediaInput.vue'
@@ -217,7 +209,6 @@ const insertImageElement = (files: FileList) => {
 }
 
 const shapePoolVisible = ref(false)
-const linePoolVisible = ref(false)
 const chartPoolVisible = ref(false)
 const tableGeneratorVisible = ref(false)
 const mediaInputVisible = ref(false)
@@ -255,7 +246,7 @@ const drawLine = (line: LinePoolItem) => {
     type: 'line',
     data: line,
   })
-  linePoolVisible.value = false
+  shapePoolVisible.value = false
 }
 
 // 打开选择面板
@@ -268,7 +259,7 @@ const toggleSraechPanel = () => {
   mainStore.setSearchPanelState(!showSearchPanel.value)
 }
 
-// 打开批注面板
+// 打开评论面板
 const toggleNotesPanel = () => {
   mainStore.setNotesPanelState(!showNotesPanel.value)
 }
@@ -283,12 +274,14 @@ const openDesignPanel = () => {
   // 如果格式按钮已经激活，则关闭工具栏
   if (isFormatActive.value) {
     mainStore.setToolbarVisibility(false)
-  } else {
+  }
+  else {
     // 否则打开工具栏并根据是否有选中元素显示对应面板
     // 如果有选中元素，显示元素样式面板；否则显示幻灯片设计面板
     if (activeElementIdList.value.length > 0) {
       mainStore.setToolbarState(activeElementIdList.value.length === 1 ? ToolbarStates.EL_STYLE : ToolbarStates.MULTI_STYLE)
-    } else {
+    }
+    else {
       mainStore.setToolbarState(ToolbarStates.SLIDE_DESIGN)
     }
     mainStore.setToolbarVisibility(true)
@@ -300,7 +293,8 @@ const openAnimationPanel = () => {
   // 如果动画面板已经打开，则关闭工具栏
   if (showToolbar.value && toolbarState.value === ToolbarStates.EL_ANIMATION) {
     mainStore.setToolbarVisibility(false)
-  } else {
+  }
+  else {
     // 否则打开工具栏并显示动画面板
     mainStore.setToolbarState(ToolbarStates.EL_ANIMATION)
     mainStore.setToolbarVisibility(true)
@@ -317,7 +311,7 @@ const openImageLibPanel = () => {
 .canvas-tool {
   position: relative;
   border-bottom: 1px solid $borderColor;
-  background-color: #fff;
+  background-color: $lightGray;
   display: flex;
   justify-content: space-between;
   padding: 0 10px;
@@ -350,6 +344,7 @@ const openImageLibPanel = () => {
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
+  align-items: center;
 
   & > div {
     flex-shrink: 0;
@@ -372,7 +367,15 @@ const openImageLibPanel = () => {
     }
 
     &.active {
-      background-color: #f1f1f1;
+      background-color: #dedef4;
+      
+      .icon {
+        color: #5337a6;
+      }
+      
+      .text {
+        color: #5337a6;
+      }
     }
 
     .icon {
@@ -413,6 +416,13 @@ const openImageLibPanel = () => {
       }
     }
   }
+}
+.toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background-color: #e0e0e0;
+  margin: 0 8px;
+  flex-shrink: 0;
 }
 .handler-item {
   height: 30px;
@@ -465,12 +475,21 @@ const openImageLibPanel = () => {
         display: none;
       }
     }
+    
+    .toolbar-divider {
+      margin: 0 4px;
+    }
   }
 }
 @media screen and (width <= 1366px) {
   .add-element-handler {
     .insert-handler-item {
       padding: 0 6px;
+    }
+    
+    .toolbar-divider {
+      height: 16px;
+      margin: 0 2px;
     }
   }
 }

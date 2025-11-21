@@ -377,7 +377,6 @@ const contextmenusThumbnailItem = (): ContextmenuItem[] => {
   font-size: 12px;
   display: flex;
   flex-shrink: 0;
-  border-bottom: 1px solid $borderColor;
   cursor: pointer;
   padding: 10px 8px;
   align-items: center;

@@ -81,26 +81,35 @@ const emit = defineEmits<{
   }
 
   &.card {
-    height: 40px;
-    font-size: 12px;
+    height: 32px;
+    font-size: 13px;
     flex-shrink: 0;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    padding: 2px;
+    gap: 2px;
 
     .tab {
       flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: $lightGray;
-      border-bottom: 1px solid $borderColor;
+      background-color: transparent;
+      border-radius: 3px;
       cursor: pointer;
+      color: #666;
+      font-weight: 400;
+      transition: all 0.2s ease;
 
-      &.active {
-        background-color: transparent;
-        border-bottom-color: transparent;
+      &:hover {
+        color: #333;
       }
 
-      & + .tab {
-        border-left: 1px solid $borderColor;
+      &.active {
+        background-color: #fff;
+        color: $themeColor;
+        font-weight: 500;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
       }
     }
   }

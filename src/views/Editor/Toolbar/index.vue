@@ -44,6 +44,10 @@ const elementTabs = [
   { label: '样式', key: ToolbarStates.EL_STYLE },
   { label: '位置', key: ToolbarStates.EL_POSITION },
 ]
+const multiSelectTabs = [
+  { label: '样式（多选）', key: ToolbarStates.MULTI_STYLE },
+  { label: '位置（多选）', key: ToolbarStates.MULTI_POSITION },
+]
 const animationTabs: { label: string; key: ToolbarStates }[] = []
 
 const setToolbarState = (value: ToolbarStates) => {
@@ -62,11 +66,11 @@ const currentTabs = computed(() => {
   
   if (!activeElementIdList.value.length) return []
   else if (activeElementIdList.value.length > 1) {
-    if (!activeGroupElementId.value) return []
+    if (!activeGroupElementId.value) return multiSelectTabs
 
     const activeGroupElement = activeElementList.value.find(item => item.id === activeGroupElementId.value)
     if (activeGroupElement) return elementTabs
-    return []
+    return multiSelectTabs
   }
   return elementTabs
 })
@@ -146,7 +150,6 @@ const currentIcon = computed(() => {
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
-  border-bottom: 1px solid $borderColor;
   flex-shrink: 0;
 
   .header-title {
@@ -182,6 +185,7 @@ const currentIcon = computed(() => {
 }
 .tabs-wrapper {
   flex-shrink: 0;
+  padding: 0 12px;
 }
 .content {
   padding: 12px;

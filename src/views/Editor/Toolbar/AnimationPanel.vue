@@ -1,11 +1,13 @@
 <template>
   <div class="animation-panel">
+    <div class="tabs-wrapper">
     <Tabs 
       :tabs="animationTabs" 
       :value="activeAnimationTab" 
       card 
       @update:value="key => setActiveAnimationTab(key as AnimationTabType)"
     />
+    </div>
     <div class="content">
       <component :is="currentAnimationComponent"></component>
     </div>
@@ -42,6 +44,10 @@ const currentAnimationComponent = computed(() => {
   flex-direction: column;
   height: 100%;
   margin: -12px;
+}
+.tabs-wrapper {
+  flex-shrink: 0;
+  padding: 0 12px;
 }
 .content {
   flex: 1;

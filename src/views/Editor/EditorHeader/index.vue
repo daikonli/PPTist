@@ -3,16 +3,6 @@
     <div class="left">
       <Popover trigger="click" placement="bottom-start" v-model:value="mainMenuVisible">
         <template #content>
-          <div class="main-menu">
-            <div class="ai-menu" @click="openAIPPTDialog(); mainMenuVisible = false">
-              <div class="icon"><IconClick theme="two-tone" :fill="['#ffc158', '#fff']" /></div>
-              <div class="aippt-content">
-                <div class="aippt"><span>AIPPT</span></div>
-                <div class="aippt-subtitle">输入一句话，智能生成演示文稿</div>
-              </div>
-            </div>
-          </div>
-          <Divider :margin="10" />
           <div class="import-section">
             <div class="import-label">导入文件</div>
             <div class="import-grid">
@@ -22,7 +12,6 @@
               }">
                 <span class="icon"><IconFilePdf theme="multi-color" :fill="['#333', '#d14424', '#fff']" /></span>
                 <span class="label">PPTX</span>
-                <span class="sub-label">（仅供测试）</span>
               </FileInput>
               <FileInput class="import-block" accept=".json" @change="files => {
                 importJSON(files)
@@ -30,16 +19,15 @@
               }">
                 <span class="icon"><IconFileJpg theme="multi-color" :fill="['#333', '#d14424', '#fff']" /></span>
                 <span class="label">JSON</span>
-                <span class="sub-label">（仅供测试）</span>
               </FileInput>
-              <FileInput class="import-block" accept=".pptist" @change="files => {
+              <!-- <FileInput class="import-block" accept=".pptist" @change="files => {
                 importSpecificFile(files)
                 mainMenuVisible = false
               }">
                 <span class="icon"><IconNotes theme="multi-color" :fill="['#333', '#d14424', '#fff']" /></span>
                 <span class="label">PPTIST</span>
                 <span class="sub-label">（专属格式）</span>
-              </FileInput>
+              </FileInput> -->
             </div>
           </div>
           <Divider :margin="10" />
@@ -71,9 +59,10 @@
     </div>
 
     <div class="right">
-      <div class="group-menu-item">
+      <div class="group-menu-item bordered-btn">
         <div class="menu-item" v-tooltip="'幻灯片放映（F5）'" @click="enterScreening()">
           <IconPpt class="icon" />
+          <span class="text">演示</span>
         </div>
         <Popover trigger="click" center>
           <template #content>
@@ -83,11 +72,17 @@
           <div class="arrow-btn"><IconDown class="arrow" /></div>
         </Popover>
       </div>
+      <div class="menu-item bordered-btn" v-tooltip="'导出'" @click="setDialogForExport('pptx')">
+        <IconDownload class="icon" />
+        <span class="text">下载</span>
+      </div>
+      <div class="header-divider"></div>
+      <div class="menu-item" v-tooltip="'查找替换（Ctrl + F）'" @click="toggleSearchPanel()">
+        <IconSearch class="icon" />
+      </div>
+      <div class="header-divider"></div>
       <div class="menu-item" v-tooltip="'AI生成PPT'" @click="openAIPPTDialog(); mainMenuVisible = false">
         <span class="text ai">AI</span>
-      </div>
-      <div class="menu-item" v-tooltip="'导出'" @click="setDialogForExport('pptx')">
-        <IconDownload class="icon" />
       </div>
     </div>
 
@@ -158,6 +153,10 @@ const openMarkupPanel = () => {
 const openAIPPTDialog = () => {
   mainStore.setAIPPTDialogState(true)
 }
+
+const toggleSearchPanel = () => {
+  mainStore.setSearchPanelState(!mainStore.showSearchPanel)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -167,33 +166,43 @@ const openAIPPTDialog = () => {
   border-bottom: 1px solid $borderColor;
   display: flex;
   justify-content: space-between;
-  padding: 0 5px;
+  padding: 0 16px;
 }
 .left, .right {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+.header-divider {
+  width: 1px;
+  height: 20px;
+  background-color: #e0e0e0;
+  margin: 0 8px;
+  flex-shrink: 0;
+}
 .menu-item {
-  height: 30px;
+  height: 32px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 14px;
   padding: 0 10px;
-  border-radius: $borderRadius;
+  border-radius: 6px;
   cursor: pointer;
 
   .icon {
-    font-size: 18px;
+    font-size: 16px;
     color: #666;
+    margin-right: 4px;
   }
   .text {
+    font-size: 14px;
+    color: #333;
+  }
+  .ai {
     width: 18px;
     text-align: center;
     font-size: 17px;
-  }
-  .ai {
     background: linear-gradient(270deg, #d897fd, #33bcfc);
     background-clip: text;
     color: transparent;
@@ -202,6 +211,16 @@ const openAIPPTDialog = () => {
 
   &:hover {
     background-color: #f1f1f1;
+  }
+  
+  &.bordered-btn {
+    border: 1px solid #e0e0e0;
+    padding: 0 12px;
+    
+    &:hover {
+      background-color: #f9f9f9;
+      border-color: #d0d0d0;
+    }
   }
 }
 .popover-menu-item {
@@ -300,24 +319,50 @@ const openAIPPTDialog = () => {
 }
 
 .group-menu-item {
-  height: 30px;
+  height: 32px;
   display: flex;
   margin: 0 8px;
   padding: 0 2px;
-  border-radius: $borderRadius;
+  border-radius: 6px;
 
   &:hover {
     background-color: #f1f1f1;
   }
 
   .menu-item {
-    padding: 0 3px;
+    padding: 0 12px;
+    border-radius: 2px;
   }
   .arrow-btn {
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    padding: 0 4px;
+  }
+  
+  &.bordered-btn {
+    border: 1px solid #e0e0e0;
+    padding: 0;
+    
+    &:hover {
+      background-color: #f9f9f9;
+      border-color: #d0d0d0;
+    }
+    
+    .menu-item {
+      border-right: 1px solid #e0e0e0;
+      
+      &:hover {
+        background-color: transparent;
+      }
+    }
+    
+    .arrow-btn {
+      &:hover {
+        background-color: #ebebeb;
+      }
+    }
   }
 }
 .title {
