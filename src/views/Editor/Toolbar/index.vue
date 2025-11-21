@@ -44,11 +44,7 @@ const elementTabs = [
   { label: '样式', key: ToolbarStates.EL_STYLE },
   { label: '位置', key: ToolbarStates.EL_POSITION },
 ]
-const slideTabs: { label: string; key: ToolbarStates }[] = []
-const multiSelectTabs = [
-  { label: '样式（多选）', key: ToolbarStates.MULTI_STYLE },
-  { label: '位置（多选）', key: ToolbarStates.MULTI_POSITION },
-]
+const animationTabs: { label: string; key: ToolbarStates }[] = []
 
 const setToolbarState = (value: ToolbarStates) => {
   mainStore.setToolbarState(value)
@@ -59,13 +55,18 @@ const closeToolbar = () => {
 }
 
 const currentTabs = computed(() => {
-  if (!activeElementIdList.value.length) return slideTabs
+  // 如果是动画面板，不显示任何tab
+  if (toolbarState.value === ToolbarStates.EL_ANIMATION || toolbarState.value === ToolbarStates.SLIDE_ANIMATION) {
+    return animationTabs
+  }
+  
+  if (!activeElementIdList.value.length) return []
   else if (activeElementIdList.value.length > 1) {
-    if (!activeGroupElementId.value) return multiSelectTabs
+    if (!activeGroupElementId.value) return []
 
     const activeGroupElement = activeElementList.value.find(item => item.id === activeGroupElementId.value)
     if (activeGroupElement) return elementTabs
-    return multiSelectTabs
+    return []
   }
   return elementTabs
 })
@@ -74,6 +75,21 @@ watch(currentTabs, () => {
   const currentTabsValue: ToolbarStates[] = currentTabs.value.map(tab => tab.key)
   if (currentTabsValue.length > 0 && !currentTabsValue.includes(toolbarState.value)) {
     mainStore.setToolbarState(currentTabsValue[0])
+  }
+})
+
+// 监听元素选中状态变化，未选中元素时切换到幻灯片设计面板
+watch(activeElementIdList, (newVal, oldVal) => {
+  // 当从有选中元素变为无选中元素时
+  if (oldVal && oldVal.length > 0 && newVal.length === 0) {
+    // 如果当前工具栏是元素相关的面板，则切换到幻灯片设计面板
+    if (toolbarState.value === ToolbarStates.EL_STYLE || 
+        toolbarState.value === ToolbarStates.EL_POSITION ||
+        toolbarState.value === ToolbarStates.EL_ANIMATION ||
+        toolbarState.value === ToolbarStates.MULTI_STYLE ||
+        toolbarState.value === ToolbarStates.MULTI_POSITION) {
+      mainStore.setToolbarState(ToolbarStates.SLIDE_DESIGN)
+    }
   }
 })
 
@@ -92,13 +108,13 @@ const currentPanelComponent = computed(() => {
 
 const currentTitle = computed(() => {
   const titleMap = {
-    [ToolbarStates.EL_STYLE]: '样式',
-    [ToolbarStates.EL_POSITION]: '位置',
+    [ToolbarStates.EL_STYLE]: '格式',
+    [ToolbarStates.EL_POSITION]: '格式',
     [ToolbarStates.EL_ANIMATION]: '动画',
     [ToolbarStates.SLIDE_DESIGN]: '格式',
     [ToolbarStates.SLIDE_ANIMATION]: '动画',
-    [ToolbarStates.MULTI_STYLE]: '样式',
-    [ToolbarStates.MULTI_POSITION]: '位置',
+    [ToolbarStates.MULTI_STYLE]: '格式',
+    [ToolbarStates.MULTI_POSITION]: '格式',
   }
   return titleMap[toolbarState.value] || ''
 })

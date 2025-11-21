@@ -107,7 +107,7 @@
       <div class="insert-handler-item" :class="{ 'active': showSymbolPanel }" v-tooltip="'插入符号'" @click="toggleSymbolPanel()">
         <IconSymbol class="icon" /> <span class="text">符号</span>
       </div>
-      <div class="insert-handler-item" :class="{ 'active': showToolbar && toolbarState === ToolbarStates.SLIDE_DESIGN }" v-tooltip="'格式'" @click="openDesignPanel()">
+      <div class="insert-handler-item" :class="{ 'active': isFormatActive }" v-tooltip="'格式'" @click="openDesignPanel()">
         <IconTheme class="icon" /> <span class="text">格式</span>
       </div>
       <div class="insert-handler-item" :class="{ 'active': showToolbar && toolbarState === ToolbarStates.EL_ANIMATION }" v-tooltip="'动画'" @click="openAnimationPanel()">
@@ -146,7 +146,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSnapshotStore } from '@/store'
 import { getImageDataURL } from '@/utils/image'
@@ -170,8 +170,19 @@ import Popover from '@/components/Popover.vue'
 import PopoverMenuItem from '@/components/PopoverMenuItem.vue'
 
 const mainStore = useMainStore()
-const { creatingElement, creatingCustomShape, showSelectPanel, showSearchPanel, showNotesPanel, showSymbolPanel, toolbarState, showToolbar } = storeToRefs(mainStore)
+const { creatingElement, creatingCustomShape, showSelectPanel, showSearchPanel, showNotesPanel, showSymbolPanel, toolbarState, showToolbar, activeElementIdList } = storeToRefs(mainStore)
 const { canUndo, canRedo } = storeToRefs(useSnapshotStore())
+
+// 格式按钮激活状态
+const isFormatActive = computed(() => {
+  return showToolbar.value && (
+    toolbarState.value === ToolbarStates.SLIDE_DESIGN ||
+    toolbarState.value === ToolbarStates.EL_STYLE ||
+    toolbarState.value === ToolbarStates.EL_POSITION ||
+    toolbarState.value === ToolbarStates.MULTI_STYLE ||
+    toolbarState.value === ToolbarStates.MULTI_POSITION
+  )
+})
 
 const { redo, undo } = useHistorySnapshot()
 
@@ -267,16 +278,33 @@ const toggleSymbolPanel = () => {
   mainStore.setSymbolPanelState(!showSymbolPanel.value)
 }
 
-// 打开设计面板
+// 切换设计面板
 const openDesignPanel = () => {
-  mainStore.setToolbarState(ToolbarStates.SLIDE_DESIGN)
-  mainStore.setToolbarVisibility(true)
+  // 如果格式按钮已经激活，则关闭工具栏
+  if (isFormatActive.value) {
+    mainStore.setToolbarVisibility(false)
+  } else {
+    // 否则打开工具栏并根据是否有选中元素显示对应面板
+    // 如果有选中元素，显示元素样式面板；否则显示幻灯片设计面板
+    if (activeElementIdList.value.length > 0) {
+      mainStore.setToolbarState(activeElementIdList.value.length === 1 ? ToolbarStates.EL_STYLE : ToolbarStates.MULTI_STYLE)
+    } else {
+      mainStore.setToolbarState(ToolbarStates.SLIDE_DESIGN)
+    }
+    mainStore.setToolbarVisibility(true)
+  }
 }
 
-// 打开动画面板
+// 切换动画面板
 const openAnimationPanel = () => {
-  mainStore.setToolbarState(ToolbarStates.EL_ANIMATION)
-  mainStore.setToolbarVisibility(true)
+  // 如果动画面板已经打开，则关闭工具栏
+  if (showToolbar.value && toolbarState.value === ToolbarStates.EL_ANIMATION) {
+    mainStore.setToolbarVisibility(false)
+  } else {
+    // 否则打开工具栏并显示动画面板
+    mainStore.setToolbarState(ToolbarStates.EL_ANIMATION)
+    mainStore.setToolbarVisibility(true)
+  }
 }
 
 // 打开图库面板

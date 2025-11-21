@@ -105,6 +105,31 @@ export const useMainStore = defineStore('main', {
       else this.handleElementId = ''
       
       this.activeElementIdList = activeElementIdList
+
+      // 当选中元素时，自动显示右侧工具栏
+      if (activeElementIdList.length > 0) {
+        this.showToolbar = true
+        
+        // 根据选中元素数量设置合适的工具栏状态
+        if (activeElementIdList.length === 1) {
+          // 单选：如果当前是幻灯片面板或多选面板，则切换到单选样式面板
+          if (this.toolbarState === ToolbarStates.SLIDE_DESIGN || 
+              this.toolbarState === ToolbarStates.SLIDE_ANIMATION ||
+              this.toolbarState === ToolbarStates.MULTI_STYLE ||
+              this.toolbarState === ToolbarStates.MULTI_POSITION) {
+            this.toolbarState = ToolbarStates.EL_STYLE
+          }
+        } else {
+          // 多选：如果当前是幻灯片面板或单选面板，则切换到多选样式面板
+          if (this.toolbarState === ToolbarStates.SLIDE_DESIGN || 
+              this.toolbarState === ToolbarStates.SLIDE_ANIMATION ||
+              this.toolbarState === ToolbarStates.EL_STYLE ||
+              this.toolbarState === ToolbarStates.EL_POSITION ||
+              this.toolbarState === ToolbarStates.EL_ANIMATION) {
+            this.toolbarState = ToolbarStates.MULTI_STYLE
+          }
+        }
+      }
     },
     
     setHandleElementId(handleElementId: string) {
